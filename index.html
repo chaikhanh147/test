@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quản lý tài khoản</title>
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzUDxUlYXyiyBoErboTBmzTuk2kGvcbR-pHtJ2HywCgjOoTxDWhXBRnNvZ7T9Avrwzljg/exec'; // Thay bằng URL Web App của bạn
+
+    // Hàm đăng nhập
+    function login() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      
+      fetch(API_URL + '?username=' + username + '&password=' + password)
+        .then(response => response.text())
+        .then(data => {
+          console.log(data); // Xem dữ liệu trả về từ API
+          if (data !== 'Invalid credentials') {
+            var result = JSON.parse(data);
+            document.getElementById('x').value = result.x;
+            document.getElementById('y').value = result.y;
+            document.getElementById('data').style.display = 'block';
+          } else {
+            alert('Đăng nhập thất bại!');
+          }
+        });
+    }
+
+    // Hàm lưu dữ liệu x, y
+    function saveData() {
+      var username = document.getElementById('username').value;
+      var x = document.getElementById('x').value;
+      var y = document.getElementById('y').value;
+      
+      var data = new URLSearchParams();
+      data.append('username', username);
+      data.append('x', x);
+      data.append('y', y);
+      
+      fetch(API_URL, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.text())
+      .then(result => alert(result));
+    }
+  </script>
+</head>
+<body>
+  <h2>Đăng nhập</h2>
+  <input type="text" id="username" placeholder="Tài khoản">
+  <input type="password" id="password" placeholder="Mật khẩu">
+  <button onclick="login()">Đăng nhập</button>
+
+  <div id="data" style="display:none;">
+    <h3>Thông tin x, y</h3>
+    <input type="text" id="x" placeholder="Giá trị x">
+    <input type="text" id="y" placeholder="Giá trị y">
+    <button onclick="saveData()">Lưu</button>
+  </div>
+</body>
+</html>
